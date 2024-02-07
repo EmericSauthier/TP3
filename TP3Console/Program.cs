@@ -111,7 +111,7 @@ namespace TP3Console
         {
             var ctx = new FilmsDbContext();
 
-            var user = ctx.Avis.OrderByDescending(a => a.Note).First();
+            var user = ctx.Avis.OrderByDescending(a => a.Note).First().UtilisateurNavigation;
         }
     }
 }
