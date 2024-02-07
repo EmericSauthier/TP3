@@ -113,7 +113,7 @@ namespace TP3Console
 
             var user = ctx.Avis.OrderByDescending(a => a.Note).First();
 
-            Console.WriteLine(user);
+            Console.WriteLine(user.Utilisateur);
         }
     }
 }
