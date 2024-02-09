@@ -8,6 +8,7 @@ namespace TP3Console.Models.EntityFramework
 {
     public partial class Avi
     {
+        public Avi() { }
         public override string ToString()
         {
             return $"Film : {this.Film}\nUtilisateur : {this.Utilisateur}\nNote : {this.Note}";

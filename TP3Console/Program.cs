@@ -1,6 +1,7 @@
 ﻿using TP3Console.Models.EntityFramework;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace TP3Console
 {
@@ -9,6 +10,7 @@ namespace TP3Console
         static void Main(string[] args)
         {
             Exo2Q9();
+
             Console.ReadKey();
         }
 
@@ -111,9 +113,68 @@ namespace TP3Console
         {
             var ctx = new FilmsDbContext();
 
-            var user = ctx.Avis.OrderByDescending(a => a.Note).First();
+            var user = ctx.Avis.OrderByDescending(a => a.Note).First().UtilisateurNavigation;
 
-            Console.WriteLine(user.Utilisateur);
+            Console.WriteLine(user);
+        }
+
+        public static void AjoutUtilisateur()
+        {
+            var ctx = new FilmsDbContext();
+            Utilisateur moi = new Utilisateur("Emeric", "emeric.sauthier@etu.univ-smb.fr", "emeric");
+
+            ctx.Utilisateurs.Add(moi);
+
+            ctx.SaveChanges();
+        }
+
+        public static void ModifierFilm(string titre, string? categorie = null, string? description = null)
+        {
+            var ctx = new FilmsDbContext();
+            var film = ctx.Films.Where(f => f.Nom.ToLower() == titre.ToLower()).First();
+
+            if (film == null)
+            {
+                return;
+            }
+
+            if (categorie != null)
+            {
+                var c = ctx.Categories.Where(c => c.Nom.ToLower() == categorie.ToLower()).First();
+
+                if (c != null)
+                {
+                    film.Categorie = c.Id;
+                }
+            }
+
+            if (description != null)
+            {
+                film.Description = description;
+            }
+
+            ctx.SaveChanges();
+        }
+
+        public static void SupprimerFilm(string titre)
+        {
+            var ctx = new FilmsDbContext();
+            var film = ctx.Films.Where(f => f.Nom.ToLower() == titre.ToLower()).First();
+            var lesAvis = ctx.Avis.Where(a => a.Film == film.Id);
+
+            if (film == null)
+            {
+                return;
+            }
+
+            foreach (var avis in lesAvis)
+            {
+                ctx.Avis.Remove(avis);
+            }
+
+            ctx.Films.Remove(film);
+
+            ctx.SaveChanges();
         }
     }
 }
